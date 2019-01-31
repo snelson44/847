@@ -1,0 +1,19 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import fetch_mldata
+import firstlayer as firstlayer
+
+mnist = fetch_mldata('MNIST original')
+
+# Reshape the data to be square
+mnist.square_data = mnist.data.reshape(N,28,28)
+
+layer1 = firstlayer.FirstLayer(1, mnist.square_data, mnist.target)
+
+# 3. On Center Off Center Filtering
+
+
+# 4. Visualize Your Outputs
+
+
+# 5. Spiketimes 
