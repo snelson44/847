@@ -8,6 +8,7 @@ samueljn@andrew.cmu.edu
 """
 
 import math
+import csv
 import numpy as np
 from scipy import signal
 
@@ -57,6 +58,20 @@ class FirstLayer:
         return pixel_2_spike
 
 
-    def write_spiketimes(self, path, receptive_field):
+    def write_spiketimes(self, image, path, pixel_volley, spike_volley):
+
+        with open(path + 'spiketimes.csv', mode='w') as spiketimes:
+            csv_writer = csv.writer(spiketimes, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+            csv_writer.writerow(['image_number', 'spike_position', 'spike_time'])
+
+            for row_index, row in enumerate(pixel_volley):
+                for col_index, col in enumerate(pixel_volley):
+                    csv_writer.writerow([1, 
+                        int(pixel_volley[row_index][col_index]),
+                        int(spike_volley[row_index][col_index])]) 
         
+            print("spiketimes written")
+        spiketimes.close()
+
         return

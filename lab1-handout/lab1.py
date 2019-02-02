@@ -24,14 +24,31 @@ SPIKE_THRESHOLD = 4
 
 MAX_PIXEL_VALUE = 8
 
+PATH = 'C:/Users/Sam/college/847/lab1-handout/'
+
 def generate_receptive_field(middle_row, middle_col):
-	middle_row = (IMAGE_HEIGHT / 2) - 1
-	middle_col = (IMAGE_WIDTH / 2) - 1
+	middle_row = int(middle_row)
+	middle_col = int(middle_col)
 	receptive_field_rows = [middle_row-1, middle_row, middle_row+1]
 	receptive_field_cols = [middle_col-1, middle_col, middle_col+1]
 	receptive_field = [receptive_field_rows, receptive_field_cols]
 
 	return receptive_field
+
+def generate_volley(image, middle_row, middle_col):
+	receptive_field = generate_receptive_field(middle_row, middle_col)
+
+	volley = np.zeros((3, 3))
+	row = receptive_field[0]
+	row_index = 0
+	for col_index, col in enumerate(row):
+		volley_x = receptive_field[row_index][col_index]
+		for col_index, col in enumerate(row):
+			volley_y = receptive_field[row_index][col_index]
+
+			volley[row_index][col_index] = image[volley_x][volley_y]
+
+	return volley
 
 def parse_args(args=None):
     parser = argparse.ArgumentParser(description="on/off center filter images")
@@ -77,39 +94,42 @@ if __name__ == '__main__':
 	my_filter = filters.Filter(filter_type)
 
 	# normalize data to 3 bits
-	x = layer1.preprocess(my_filter, 3)
+	normalized_images = layer1.preprocess(my_filter, 3)
 
 # 3. On Center Off Center Filtering
 
-	# create pixel values
-	pixel_vals = my_filter.run(cell_dict, x[350], IMAGE_WIDTH, IMAGE_HEIGHT)
 
 	middle_row = (IMAGE_HEIGHT / 2) - 1
 	middle_col = (IMAGE_WIDTH / 2) - 1
-	receptive_field = generate_receptive_field(middle_row, middle_col)
+	for normalized_image in normalized_images:
+		# create pixel values
+		pixel_vals = my_filter.run(cell_dict, normalized_image, IMAGE_WIDTH, IMAGE_HEIGHT)
 
-	
+		# 4. Visualize Your Outputs
 
-# 4. Visualize Your Outputs
+		spike_vals = np.zeros((IMAGE_HEIGHT, IMAGE_WIDTH))
+		for row_index, row in enumerate(pixel_vals):
+			for col_index, pixel in enumerate(row):
+				spike_vals[row_index][col_index] = layer1.generate_spikes(pixel, SPIKE_THRESHOLD, MAX_PIXEL_VALUE)
+				# print("Row: {}, Col: {}, Pixel Value: {}, Spike Value: {}".format(row_index, col_index, pixel_vals[row_index][col_index], spike_vals[row_index][col_index]))
 
-	spike_vals = np.zeros((IMAGE_HEIGHT, IMAGE_WIDTH))
-	for row_index, row in enumerate(pixel_vals):
-		for col_index, pixel in enumerate(row):
-			spike_vals[row_index][col_index] = layer1.generate_spikes(pixel, SPIKE_THRESHOLD, MAX_PIXEL_VALUE)
-			print("Row: {}, Col: {}, Pixel Value: {}, Spike Value: {}".format(row_index, col_index, pixel_vals[row_index][col_index], spike_vals[row_index][col_index]))
+		# generate spike volley and pixel volley
+		spike_volley = generate_volley(spike_vals, middle_row, middle_col)
+		pixel_volley = generate_volley(pixel_vals, middle_row, middle_col)
 
+		layer1.write_spiketimes(normalized_image, PATH, pixel_volley, spike_volley)
 
-	pixel = plt.figure()
-	plt.title('Pixel values')
-	pixel_vals_vis = np.ma.masked_where(pixel_vals <= 0, pixel_vals)
-	pixel_vals_plot = plt.pcolor(pixel_vals_vis, cmap = "gray")
+	# pixel = plt.figure()
+	# plt.title('Pixel values')
+	# pixel_vals_vis = np.ma.masked_where(pixel_vals <= 0, pixel_vals)
+	# pixel_vals_plot = plt.pcolor(pixel_vals_vis, cmap = "gray")
 
-	spike = plt.figure()
-	plt.title('Spiketimes')
-	spike_vals_vis = np.ma.masked_where(spike_vals <= 0, spike_vals)
-	spike_vals_plot = plt.pcolor(spike_vals_vis, cmap = "gray")
+	# spike = plt.figure()
+	# plt.title('Spiketimes')
+	# spike_vals_vis = np.ma.masked_where(spike_vals <= 0, spike_vals)
+	# spike_vals_plot = plt.pcolor(spike_vals_vis, cmap = "gray")
 
-	plt.show()
+	# plt.show()
 
 
 # 5. Spiketimes 
