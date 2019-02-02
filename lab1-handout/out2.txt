@@ -125,8 +125,8 @@ Row: 4, Col: 11, Pixel Value: 0.0, Spike Value: 0.0
 Row: 4, Col: 12, Pixel Value: 0.0, Spike Value: 0.0
 Row: 4, Col: 13, Pixel Value: 0.0, Spike Value: 0.0
 Row: 4, Col: 14, Pixel Value: 0.0, Spike Value: 0.0
-Row: 4, Col: 15, Pixel Value: 0.0, Spike Value: 0.0
-Row: 4, Col: 16, Pixel Value: 0.0, Spike Value: 0.0
+Row: 4, Col: 15, Pixel Value: -1.0, Spike Value: 0.0
+Row: 4, Col: 16, Pixel Value: -1.0, Spike Value: 0.0
 Row: 4, Col: 17, Pixel Value: 0.0, Spike Value: 0.0
 Row: 4, Col: 18, Pixel Value: 0.0, Spike Value: 0.0
 Row: 4, Col: 19, Pixel Value: 0.0, Spike Value: 0.0

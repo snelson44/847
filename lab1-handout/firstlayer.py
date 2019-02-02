@@ -52,10 +52,11 @@ class FirstLayer:
             return 0
 
         # smaller pixel vals correlate to more intense inputs
-        pixel_2_spike = max_val - normalized_pixel 
+        pixel_2_spike = max_val - pixel_val 
 
         return pixel_2_spike
 
 
-    def write_spiketimes(self, path, receptive_field): 
+    def write_spiketimes(self, path, receptive_field):
+        
         return

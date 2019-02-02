@@ -24,6 +24,15 @@ SPIKE_THRESHOLD = 4
 
 MAX_PIXEL_VALUE = 8
 
+def generate_receptive_field(middle_row, middle_col):
+	middle_row = (IMAGE_HEIGHT / 2) - 1
+	middle_col = (IMAGE_WIDTH / 2) - 1
+	receptive_field_rows = [middle_row-1, middle_row, middle_row+1]
+	receptive_field_cols = [middle_col-1, middle_col, middle_col+1]
+	receptive_field = [receptive_field_rows, receptive_field_cols]
+
+	return receptive_field
+
 def parse_args(args=None):
     parser = argparse.ArgumentParser(description="on/off center filter images")
     parser.add_argument('-f', '--filter',
@@ -70,18 +79,18 @@ if __name__ == '__main__':
 	# normalize data to 3 bits
 	x = layer1.preprocess(my_filter, 3)
 
+# 3. On Center Off Center Filtering
+
 	# create pixel values
-	pixel_vals = my_filter.run(cell_dict, x[1963], IMAGE_WIDTH, IMAGE_HEIGHT)
+	pixel_vals = my_filter.run(cell_dict, x[350], IMAGE_WIDTH, IMAGE_HEIGHT)
 
-	# PIL accesses images in Cartesian co-ordinates, so it is Image[columns, rows]
-	# img = Image.new( 'RGB', (28,250), "black") # create a new black image
-	# pixels = img.load() # create the pixel map
+	middle_row = (IMAGE_HEIGHT / 2) - 1
+	middle_col = (IMAGE_WIDTH / 2) - 1
+	receptive_field = generate_receptive_field(middle_row, middle_col)
 
-	# for i in range(img.size[0]):    # for every col:
-	#     for j in range(img.size[1]):    # For every row
-	#         pixels[i,j] = (i, j, 100) # set the colour accordingly
+	
 
-	# img.show()
+# 4. Visualize Your Outputs
 
 	spike_vals = np.zeros((IMAGE_HEIGHT, IMAGE_WIDTH))
 	for row_index, row in enumerate(pixel_vals):
@@ -89,11 +98,6 @@ if __name__ == '__main__':
 			spike_vals[row_index][col_index] = layer1.generate_spikes(pixel, SPIKE_THRESHOLD, MAX_PIXEL_VALUE)
 			print("Row: {}, Col: {}, Pixel Value: {}, Spike Value: {}".format(row_index, col_index, pixel_vals[row_index][col_index], spike_vals[row_index][col_index]))
 
-
-	# normalized_spike_vals = layer1.scale_data(spike_vals, 0, 1)
-
-	# print(normalized_spike_vals)
-	# print('\n')
 
 	pixel = plt.figure()
 	plt.title('Pixel values')
@@ -106,11 +110,6 @@ if __name__ == '__main__':
 	spike_vals_plot = plt.pcolor(spike_vals_vis, cmap = "gray")
 
 	plt.show()
-
-# 3. On Center Off Center Filtering
-
-
-# 4. Visualize Your Outputs
 
 
 # 5. Spiketimes 
