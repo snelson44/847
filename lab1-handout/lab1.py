@@ -22,7 +22,7 @@ IMAGE_HEIGHT = 28
 # if pixel val is >= 4, there is no spike
 SPIKE_THRESHOLD = 4
 
-MAX_PIXEL_VALUE = 8
+MAX_PIXEL_VALUE = 7
 
 PATH = 'C:/Users/Sam/college/847/lab1-handout/'
 
@@ -98,9 +98,15 @@ if __name__ == '__main__':
 
 # 3. On Center Off Center Filtering
 
+	spike_volleys = []
+	pixel_volleys = []
 
 	middle_row = (IMAGE_HEIGHT / 2) - 1
 	middle_col = (IMAGE_WIDTH / 2) - 1
+
+	# normalized_images = normalized_images[:500]
+	print(len(normalized_images))
+	print("Generating volleys")
 	for normalized_image in normalized_images:
 		# create pixel values
 		pixel_vals = my_filter.run(cell_dict, normalized_image, IMAGE_WIDTH, IMAGE_HEIGHT)
@@ -116,20 +122,23 @@ if __name__ == '__main__':
 		# generate spike volley and pixel volley
 		spike_volley = generate_volley(spike_vals, middle_row, middle_col)
 		pixel_volley = generate_volley(pixel_vals, middle_row, middle_col)
+		
+		spike_volleys.append(spike_volley)
+		pixel_volleys.append(pixel_volley)
 
-		layer1.write_spiketimes(normalized_image, PATH, pixel_volley, spike_volley)
+	layer1.write_spiketimes(PATH, spike_volleys, pixel_volleys)
 
-	# pixel = plt.figure()
-	# plt.title('Pixel values')
-	# pixel_vals_vis = np.ma.masked_where(pixel_vals <= 0, pixel_vals)
-	# pixel_vals_plot = plt.pcolor(pixel_vals_vis, cmap = "gray")
+	pixel = plt.figure()
+	plt.title('Pixel values')
+	pixel_vals_vis = np.ma.masked_where(pixel_vals <= 0, pixel_vals)
+	pixel_vals_plot = plt.pcolor(pixel_vals_vis, cmap = "gray")
 
-	# spike = plt.figure()
-	# plt.title('Spiketimes')
-	# spike_vals_vis = np.ma.masked_where(spike_vals <= 0, spike_vals)
-	# spike_vals_plot = plt.pcolor(spike_vals_vis, cmap = "gray")
+	spike = plt.figure()
+	plt.title('Spiketimes')
+	spike_vals_vis = np.ma.masked_where(spike_vals <= 0, spike_vals)
+	spike_vals_plot = plt.pcolor(spike_vals_vis, cmap = "gray")
 
-	# plt.show()
+	plt.show()
 
 
 # 5. Spiketimes 
