@@ -127,6 +127,12 @@ def parse_args(args=None):
                         help="Type of filter",
                         choices=['oncenter', 'offcenter', 'sobel'],
                         default='oncenter')
+    parser.add_argument('--run_all_images',
+                        help="Run every image, this will override '-i'") 
+    parser.add_argument('-i', '--images',
+                        help="Which images to run, 0 to 69999",
+                        nargs='+',
+                        type=int)
 
     return parser.parse_args(args)
 
@@ -154,8 +160,7 @@ def run(cell_dict, config, layer1, my_filter, normalized_images):
 	middle_row = (image_height / 2) - 1
 	middle_col = (image_width / 2) - 1
 
-	normalized_images = [normalized_images[69997], normalized_images[49997], normalized_images[69897], normalized_images[324]]
-
+	print(len(normalized_images))
 	for normalized_image in normalized_images:
 		# create pixel values
 		pixel_vals = apply_filter(normalized_image,
@@ -222,5 +227,14 @@ if __name__ == '__main__':
 	# normalize data to 3 bits
 	normalized_images = layer1.preprocess(3)
 
-	run(cell_dict, config, layer1, my_filter, normalized_images)
+	if args.run_all_images:
+		run(cell_dict, config, layer1, my_filter, normalized_images)
+	elif args.images and (args.images != 0):
+		reduced_normalized_images = []
+		for image in args.images:
+			reduced_normalized_images.append(normalized_images[image])
+
+		run(cell_dict, config, layer1, my_filter, reduced_normalized_images)
+	else:
+		run(cell_dict, config, layer1, my_filter, [normalized_images[0]])
 
