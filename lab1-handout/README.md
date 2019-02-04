@@ -44,3 +44,7 @@ The spikes inside the 3x3 receptive field of the final image will also be report
 I would like to explain the considerable changes I made to the starter code here.
 
 I created a seperate file/class for the filters. This way the code is more robust to easily adding more filters in the future. There are also several functions that where designed to be independent of their suuroundings. In other words, they are useful beyond just the scope of this singular lab. This adds up to more lines of code now, but ensures more stability and higher accesibility to editing in the future. All functions are clearly documented and explained.
+
+### Required Documents
+
+The required images, csv, and research notes can be found inside of the `results` folder on this repo.
