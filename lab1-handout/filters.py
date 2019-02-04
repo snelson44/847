@@ -10,7 +10,10 @@ samueljn@andrew.cmu.edu
 import os
 import numpy as np
 from numpy import array
-from lab1 import IMAGE_WIDTH, IMAGE_HEIGHT
+
+# define width and height of image in pixels
+IMAGE_WIDTH = 28
+IMAGE_HEIGHT = 28
 
 class Filter():
 	def __init__(self, filter_type):
@@ -42,7 +45,7 @@ class Filter():
 	def count_neighbors(self, image, x, y):
 		"""Counts the number of surrounding pixels a specific pixel has
 		Args:
-			image (list): the image, 28 x 28
+			image (np.arr): the image, 28 x 28
 			x (int): x index
 			y (int): y index
 		Returns:
@@ -65,7 +68,7 @@ class Filter():
 	def get_neighbor(self, image, x, y):
 		"""searches matrix for a certain index
 		Args:
-			image (list): the image, 28 x 28
+			image (np.arr): the image, 28 x 28
 			x (int): x index
 			y (int): y index
 		Returns:
@@ -80,7 +83,7 @@ class Filter():
 	def build_cell(self, image, row_index, col_index, cell_dict):
 		"""Store cell position values inside dictionary
 		Args:
-			image (list): the image, 28 x 28
+			image (np.arr): the image, 28 x 28
 			row_index (int): the current row of interest in the image
 			col_index (int): the current column of interest in the image
 			cell_dict (dict): contains keys for each surounding pixel
@@ -106,7 +109,7 @@ class Filter():
 		"""Calculate and store the average value of each cell and store
 			its corresponding center
 		Args:
-			image (list): the image, width x height
+			image (np.arr): the image, width x height
 			width (int): the width of the image
 			height (int): the height of the image
 			cell_dict (dict): contains keys for each surounding pixel
@@ -139,7 +142,7 @@ class Filter():
 
 
 	def oncenter(self, average, center):
-		"""Store apply comparative filter to pixel
+		"""apply oncenter filter to pixel
 		Args:
 			average (int): average value of surrounding pixels
 			center (int): value of center pixel
@@ -150,7 +153,7 @@ class Filter():
 
 
 	def offcenter(self, average, center):
-		"""Store apply comparative filter to pixel
+		"""apply offcenter filter to pixel
 		Args:
             average (int): average value of surrounding pixels
             center (int): value of center pixel
@@ -160,22 +163,69 @@ class Filter():
 		return(average - center)
 
 
-	def left_edge(self):
-		pass
+	def sobel(self, image, x, y):
+		"""apply sobel edge detection filter to pixel
+
+		   I thought this filter would be interesting because it is nearly an
+		   overly of an oncenter filtered image on top of an offcenter filtered image.
+		   This can show oncenter and offcenter spiketimes on the same image.
+		   
+		Args:
+            image (np.arr): image to filter
+            x (int): x position in image
+            y (int): y position in image
+		Returns:
+			(mag(int)): filtered pixel magnitude
+		"""
+		sobel_x = np.c_[
+		    [-1,0,1],
+		    [-2,0,2],
+		    [-1,0,1]
+		]
+		sobel_y = np.c_[
+		    [1,2,1],
+		    [0,0,0],
+		    [-1,-2,-1]
+		]
+
+		xmag = 0
+		ymag = 0
+		try:
+			for a in range(3):
+				for b in range(3):
+					xn = x + a - 1
+					yn = y + b - 1
+
+					xmag += image[xn][yn] * sobel_x[a][b]
+					ymag += image[xn][yn] * sobel_y[a][b]
+
+			mag = (xmag**2 + ymag**2)**.5
+		except IndexError:
+			mag = 0
+
+		return(mag)
 
 
 	def run(self, cell_dict, image, width, height):
 		"""Generate list of pixel_vals
 		Args:
 			cell_dict (dict): contains keys for each surounding pixel
-			image (list): the image, width x height
+			image (np.arr): the image, width x height
 			width (int): the width of the image
 			height (int): the height of the image
 		Returns:
 			(pixel_vals(list: int)): returns list of pixel_vals for every pixel in the image
 		"""
+
 		pixel_vals = np.zeros((height, width))
 		cell_dict = self.calculate_avgs(image, width, height, cell_dict)
+
+		# treat data different for sobel filter
+		if self.filter_type == 'sobel':
+			for row_index, row in enumerate(image):
+				for col_index, pixel in enumerate(row):
+					pixel_vals[row_index][col_index] = self.sobel(image, row_index, col_index)
+			return(pixel_vals)
 
 		for row_index, row in enumerate(image):
 			for col_index, pixel in enumerate(row):

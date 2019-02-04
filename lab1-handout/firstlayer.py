@@ -19,19 +19,34 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.exceptions import DataConversionWarning
 warnings.filterwarnings(action='ignore', category=DataConversionWarning)
 
-#Layer may not be both the first layer and an output layer
-class FirstLayer: 
+
+class FirstLayer:
+    """ class for manipulating data """ 
     def __init__ (self, layer_id, training_raw_data, training_target):
         self.layer_id = layer_id
         self.raw_data = training_raw_data
         self.target = training_target
 
     def scale_data(self, data, lower_bound, upper_bound):
+        """normalize/scale np array
+        Args:
+            data(np.arr): array of data to scale
+            lower_bound(int): lower bound of new data scale
+            upper_bound(int): upper bound of new data scale
+        Returns:
+            (scaled_data(np.arr: int)): new scaled data 
+        """
         scaler = MinMaxScaler(feature_range=(lower_bound, upper_bound))
         scaled_data = scaler.fit_transform(data)
         return scaled_data
 
-    def preprocess (self, my_filter, num_bits=3):
+    def preprocess (self, num_bits=3):
+        """process each image to 3 bit integers
+        Args:
+            num_bits(int): size of each piece of data
+        Returns:
+            (scaled_images(list: np.arr)): list of new scaled/processed images 
+        """
         num_images, height, width = self.raw_data.shape
 
         bound = 2**num_bits
@@ -43,10 +58,17 @@ class FirstLayer:
             scaled_images.append(scaled_image_int)
         
         return(scaled_images)
-        # return np.zeros(d2_raw_data.shape) 
 
 
     def generate_spikes(self, pixel_val, threshold, max_val):
+        """generates a spiketime given a spike position
+        Args:
+            pixel_val(int): singular spike position
+            threshold(int): if spike position exceeds threshold, consider it no spike
+            max_val(int): the value of the highest spike position
+        Returns:
+            (pixel_2_spike(int)): spiketime value 
+        """
         if pixel_val <= 0:
             return 0
         elif pixel_val >= threshold:
@@ -59,7 +81,14 @@ class FirstLayer:
 
 
     def write_spiketimes(self, path, spike_volleys, pixel_volleys):
-
+        """writes spiketimes to csv file
+        Args:
+            path(int): path to csv file
+            spike_volleys(list:np.arr): list of 3x3 arrays of spiketimes
+            pixel_volleys(list:np.arr): list of 3x3 arrays of spike positions
+        Returns:
+            Nothing: data is written to csv file, then file is closed 
+        """
         with open(path + 'spiketimes.csv', mode='w') as spiketimes:
             csv_writer = csv.writer(spiketimes, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
@@ -74,4 +103,4 @@ class FirstLayer:
         
         spiketimes.close()
 
-        return
+        return 0
