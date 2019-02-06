@@ -160,7 +160,6 @@ def run(cell_dict, config, layer1, my_filter, normalized_images):
 	middle_row = (image_height / 2) - 1
 	middle_col = (image_width / 2) - 1
 
-	print(len(normalized_images))
 	for normalized_image in normalized_images:
 		# create pixel values
 		pixel_vals = apply_filter(normalized_image,
@@ -178,11 +177,11 @@ def run(cell_dict, config, layer1, my_filter, normalized_images):
 		spike_volleys.append(spike_volley)
 		pixel_volleys.append(pixel_volley)
 
-		# # write spiketimes into csv
-		# layer1.write_spiketimes(path, spike_volleys, pixel_volleys)
-
 		# plot results
 		visualize_results(pixel_vals, spike_vals, filter_type)
+
+	# write spiketimes into csv
+	layer1.write_spiketimes(path, spike_volleys, pixel_volleys)
 
 
 

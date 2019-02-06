@@ -94,7 +94,7 @@ class FirstLayer:
             csv_writer = csv.writer(spiketimes, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
             csv_writer.writerow(['image_number', 'spike_position', 'spike_time'])
-            print("writing spiketimes")
+
             for image_index, spike_volley in enumerate(spike_volleys):
                 for row_index, row in enumerate(spike_volley):
                     for col_index, col in enumerate(spike_volley):

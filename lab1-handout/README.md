@@ -37,7 +37,7 @@ lab1.py -f sobel
 
 Two plots will be output for each image, one of the spikepositions and one of the spiketimes.
 
-The spikes inside the 3x3 receptive field of the final image will also be reported in a csv named `spiketimes.csv`
+The spikes inside the 3x3 receptive field of each image will also be reported in a csv named `spiketimes.csv`
 
 ## Notes for grading
 
