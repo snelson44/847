@@ -1,7 +1,10 @@
 #User inputs
 
+# I chose a spike threshold of 4 because spiketimes above 4 (out of 8) denote
+# a reasonably late spike that is of little computatioanl value
+spike_threshold: 4
+
 image_height: 28
 image_width: 28
 max_pixel_value: 7
-spike_threshold: 4
 path: 'C:/Users/Sam/college/847/lab1-handout/'

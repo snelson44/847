@@ -185,6 +185,7 @@ def run(cell_dict, config, layer1, my_filter, normalized_images):
 		visualize_results(pixel_vals, spike_vals, filter_type)
 
 
+
 if __name__ == '__main__':
 	cell_dict = {
 		'left_up': None,
