@@ -71,11 +71,12 @@ class FirstLayer:
         """
         if pixel_val <= 0:
             return 0
-        elif pixel_val >= threshold:
-            return 0
 
         # smaller pixel vals correlate to more intense inputs
         pixel_2_spike = max_val - pixel_val 
+
+        if pixel_2_spike > threshold:
+            return 0;
 
         return pixel_2_spike
 
